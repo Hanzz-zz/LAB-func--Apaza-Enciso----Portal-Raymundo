@@ -1,0 +1,40 @@
+PREGUNTAS GUIA BLOQUE 2.1
+
+¿Por qué n sigue siendo 10 en main?
+En C, el paso de argumentos a las funciones se realiza estrictamente "por valor". Al ejecutar incrementar(n), el sistema envía únicamente una copia del valor de n (que es 10) hacia la función. La variable x recibe esa copia, se incrementa y se imprime localmente, pero la variable original n ubicada en el main queda completamente intacta.   
+
+¿Cómo se resolvería sin usar punteros?
+Se resuelve haciendo que la función devuelva (return) el nuevo valor calculado y, dentro de la función main, se debe asignar explícitamente ese valor de retorno a la variable original para sobrescribirla (n = incrementar(n);). 
+
+
+
+GLOBAL VS LOCAL
+
+Predecir la salida de cada uno:
+Programa A: Imprimirá local contador = 1 tres veces. Esto sucede porque la variable local se crea, se inicializa en 0 y se destruye en cada llamada independiente a la función. Finalmente, imprimirá global contador = 0 ya que la variable global original nunca fue alterada.   
+Programa B: Imprimirá global contador = 3. Al no existir variables locales que la oculten, la función modifica la única variable global compartida de manera acumulativa durante las tres llamadas.   
+
+Compilar y verificar. ¿Sorpresa?
+No hay sorpresas al compilar. El resultado confirma las reglas de alcance (scope) en C: demuestra el fenómeno de "shadowing" (ocultamiento) en el Programa A, donde una variable local con el mismo nombre bloquea el acceso a la global, y la mutación de estado compartido en el Programa B.   
+
+¿Por qué las variables globales son una mala práctica en Ingeniería de Software?
+Acoplamiento: Las funciones pasan a depender del estado general del programa y no solo de sus parámetros de entrada, lo que vuelve al código rígido y difícil de reutilizar en otros proyectos.  
+Dificultad de testeo: Para ejecutar pruebas unitarias, es necesario reiniciar el estado de la variable global antes y después de cada test, volviendo las pruebas complejas y propensas a falsos positivos.   
+
+Condiciones de carrera en concurrencia: Si el programa utiliza múltiples hilos (threads) que intentan leer y modificar la misma variable global simultáneamente, los resultados se corromperán y se generarán errores intermitentes extremadamente difíciles de rastrear.  
+
+
+PREGUNTAS GUIA BLOQUE 2.2
+
+
+¿Qué contiene el .h y qué no debe contener?
+El archivo .h contiene únicamente declaraciones de funciones (firmas), macros y definiciones de tipos de datos. No debe contener las implementaciones ni el código lógico de las funciones.   ¿
+
+¿Por qué el .h no debe tener definiciones de funciones?
+Si el .h incluyera las definiciones (el código fuente real) y este se importara en múltiples archivos .c, el enlazador (linker) encontraría la misma función programada varias veces y lanzaría un error de "múltiple definición" (Multiple Definition Error).  
+
+¿Para qué sirven las directivas (#ifndef/#define/#endif)?
+Sirven como "guardas de inclusión" para evitar que el compilador procese el mismo archivo de cabecera más de una vez en la misma unidad de compilación. Si se incluye el mismo .h dos veces sin estas guardas, el compilador intentará declarar las funciones dos veces, generando un error de redefinición.  
+
+¿Por qué main.c solo necesita incluir raiz_digital.h y no raiz_digital.c?
+Porque para compilar main.c, el compilador solo necesita conocer los nombres, parámetros y retornos de las funciones (las firmas) para saber cómo llamarlas, lo cual está en el .h. La conexión con el código real (el .c) se realiza más tarde en la etapa de enlazado.
